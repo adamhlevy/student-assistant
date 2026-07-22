@@ -18,7 +18,10 @@ import json
 import os
 
 from google.adk.agents import Agent
+from google.adk.agents.context_cache_config import ContextCacheConfig
 from google.adk.apps import App
+from google.adk.apps.app import EventsCompactionConfig
+from google.adk.apps.llm_event_summarizer import LlmEventSummarizer
 from google.adk.models import Gemini
 from google.genai import types
 from zoneinfo import ZoneInfo
@@ -182,4 +185,14 @@ root_agent = Agent(
 app = App(
     root_agent=root_agent,
     name="app",
+    events_compaction_config=EventsCompactionConfig(
+        compaction_interval=20,  # summarize every 20 events
+        overlap_size=3,  # include last 3 events in next window for continuity
+        summarizer=LlmEventSummarizer(llm=Gemini(model="gemini-flash-latest")),
+    ),
+    context_cache_config=ContextCacheConfig(
+        min_tokens=2048,  # only cache if context exceeds this
+        ttl_seconds=1800,  # cache lifetime (default 1800)
+        cache_intervals=10,  # re-cache every N invocations
+    ),
 )
