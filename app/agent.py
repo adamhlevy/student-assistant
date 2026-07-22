@@ -22,6 +22,46 @@ from google.adk.apps import App
 from google.adk.models import Gemini
 from google.genai import types
 from zoneinfo import ZoneInfo
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
+
+class Course(BaseModel):
+    name: str = Field(description="The unique name of the college class.")
+    start_times: List[str] = Field(
+        description="The available start times of the class."
+    )
+    duration_hrs: int = Field(description="The duration of the class in hours.")
+    professor: str = Field(description="The professor teaching the class.")
+    max_students: int = Field(
+        description="The maximum number of students allowed in the class."
+    )
+    enrolled_students: int = Field(
+        description="The number of currently enrolled students."
+    )
+
+
+class CoursesCatalog(BaseModel):
+    courses: List[Course] = Field(
+        description="The list of all available college courses."
+    )
+
+
+class EnrollInput(BaseModel):
+    class_name: str = Field(description="The name of the class to enroll in.")
+
+
+class EnrollResult(BaseModel):
+    status: str = Field(
+        description="The status of the enrollment, e.g., 'success' or 'error'."
+    )
+    message: str = Field(
+        description="Detailed message explaining the enrollment outcome."
+    )
+    course: Optional[Course] = Field(
+        default=None,
+        description="The updated course details, if enrollment is successful.",
+    )
 
 
 def get_available_classes() -> dict:
@@ -33,7 +73,11 @@ def get_available_classes() -> dict:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     courses_file_path = os.path.join(current_dir, "courses.json")
     with open(courses_file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+
+    # Strict validation of catalog layout using Pydantic
+    validated_catalog = CoursesCatalog.model_validate(data)
+    return validated_catalog.model_dump()
 
 
 def enroll_in_class(class_name: str) -> dict:
@@ -48,50 +92,60 @@ def enroll_in_class(class_name: str) -> dict:
     Returns:
         dict: A dictionary containing the status, message, and updated course details.
     """
+    # Strict validation of input parameters
+    validated_input = EnrollInput(class_name=class_name)
+    class_name = validated_input.class_name
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     courses_file_path = os.path.join(current_dir, "courses.json")
     with open(courses_file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    courses = data.get("courses", [])
+    # Strictly validate raw json catalog data on load
+    catalog = CoursesCatalog.model_validate(data)
+
     found_course = None
-    for course in courses:
-        if course.get("name") == class_name:
+    for course in catalog.courses:
+        if course.name == class_name:
             found_course = course
             break
 
     if not found_course:
         # Case-insensitive fallback for robust matching
-        for course in courses:
-            if course.get("name", "").strip().lower() == class_name.strip().lower():
+        for course in catalog.courses:
+            if course.name.strip().lower() == class_name.strip().lower():
                 found_course = course
                 break
 
     if not found_course:
-        return {
-            "status": "error",
-            "message": f"Class '{class_name}' was not found in the course catalog.",
-        }
+        result = EnrollResult(
+            status="error",
+            message=f"Class '{class_name}' was not found in the course catalog.",
+        )
+        return result.model_dump()
 
-    enrolled = found_course.get("enrolled_students", 0)
-    max_students = found_course.get("max_students", 0)
+    enrolled = found_course.enrolled_students
+    max_students = found_course.max_students
 
     if enrolled >= max_students:
-        return {
-            "status": "error",
-            "message": f"Cannot enroll in '{found_course.get('name')}'. The class is full ({enrolled}/{max_students} students).",
-        }
+        result = EnrollResult(
+            status="error",
+            message=f"Cannot enroll in '{found_course.name}'. The class is full ({enrolled}/{max_students} students).",
+        )
+        return result.model_dump()
 
-    found_course["enrolled_students"] = enrolled + 1
+    found_course.enrolled_students = enrolled + 1
 
+    # Save the updated catalog data back to file
     with open(courses_file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+        json.dump(catalog.model_dump(), f, indent=4, ensure_ascii=False)
 
-    return {
-        "status": "success",
-        "message": f"Successfully enrolled in '{found_course.get('name')}'!",
-        "course": found_course,
-    }
+    result = EnrollResult(
+        status="success",
+        message=f"Successfully enrolled in '{found_course.name}'!",
+        course=found_course,
+    )
+    return result.model_dump()
 
 
 root_agent_instruction = """You are a helpful college student assistant dedicated to helping students search, check, schedule, and enroll in classes.
