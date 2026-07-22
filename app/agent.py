@@ -17,10 +17,11 @@ import asyncio
 import contextvars
 import datetime
 import json
+import logging
 import os
 import re
 
-from google.adk.agents import Agent
+from google.adk.agents import Agent, BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.context_cache_config import ContextCacheConfig
 from google.adk.apps import App, ResumabilityConfig
@@ -385,6 +386,128 @@ class AcademicPolicyPlugin(BasePlugin):
         return None
 
 
+class ActionOutcomeLoggingPlugin(BasePlugin):
+    """Global ADK plugin that explicitly logs intended actions versus execution outcomes."""
+
+    def __init__(self):
+        super().__init__(name="action_outcome_logging")
+        self.logger = logging.getLogger("student_assistant.action_outcome_logger")
+
+    async def before_agent_callback(
+        self, *, agent: "BaseAgent", callback_context: "CallbackContext"
+    ) -> Optional[types.Content]:
+        session_id = "unknown"
+        if callback_context and getattr(callback_context, "session", None):
+            session_id = getattr(callback_context.session, "id", "unknown")
+        agent_name = getattr(agent, "name", "unknown")
+        self.logger.info(
+            f"[INTENDED ACTION] Running agent: '{agent_name}' (Session ID: {session_id})"
+        )
+        return None
+
+    async def after_agent_callback(
+        self, *, agent: "BaseAgent", callback_context: "CallbackContext"
+    ) -> Optional[types.Content]:
+        session_id = "unknown"
+        if callback_context and getattr(callback_context, "session", None):
+            session_id = getattr(callback_context.session, "id", "unknown")
+        agent_name = getattr(agent, "name", "unknown")
+        self.logger.info(
+            f"[EXECUTION OUTCOME] Completed agent: '{agent_name}' (Session ID: {session_id})"
+        )
+        return None
+
+    async def before_model_callback(
+        self, *, callback_context: "CallbackContext", llm_request: "LlmRequest"
+    ) -> Optional[LlmResponse]:
+        agent_name = getattr(callback_context, "agent_name", "unknown")
+        self.logger.info(f"[INTENDED ACTION] Querying LLM for agent: '{agent_name}'")
+        return None
+
+    async def after_model_callback(
+        self, *, callback_context: "CallbackContext", llm_response: "LlmResponse"
+    ) -> Optional[LlmResponse]:
+        agent_name = getattr(callback_context, "agent_name", "unknown")
+
+        # Log LLM's response or chosen action (e.g., tool calling or delegation)
+        parts_text = []
+        function_calls = []
+        if llm_response.content and llm_response.content.parts:
+            for part in llm_response.content.parts:
+                if hasattr(part, "text") and part.text:
+                    parts_text.append(part.text)
+                if hasattr(part, "function_call") and part.function_call:
+                    function_calls.append(
+                        f"{part.function_call.name}({part.function_call.args})"
+                    )
+
+        outcome_desc = ""
+        if function_calls:
+            outcome_desc += (
+                f" [Intended Actions / Tool Calls: {', '.join(function_calls)}]"
+            )
+        if parts_text:
+            outcome_desc += f" [Text Response: {repr(' '.join(parts_text)[:150])}...]"
+
+        self.logger.info(
+            f"[EXECUTION OUTCOME] LLM responded for agent '{agent_name}':{outcome_desc}"
+        )
+        return None
+
+    async def before_tool_callback(
+        self,
+        *,
+        tool: "BaseTool",
+        tool_args: dict[str, Any],
+        tool_context: "ToolContext",
+    ) -> Optional[dict[str, Any]]:
+        self.logger.info(
+            f"[INTENDED ACTION] Executing tool: '{tool.name}' with arguments: {tool_args}"
+        )
+        return None
+
+    async def after_tool_callback(
+        self,
+        *,
+        tool: "BaseTool",
+        tool_args: dict[str, Any],
+        tool_context: "ToolContext",
+        result: dict[str, Any],
+    ) -> Optional[dict[str, Any]]:
+        self.logger.info(
+            f"[EXECUTION OUTCOME] Tool '{tool.name}' completed successfully. Result: {result}"
+        )
+        return None
+
+    async def on_tool_error_callback(
+        self,
+        *,
+        tool: "BaseTool",
+        tool_args: dict[str, Any],
+        tool_context: "ToolContext",
+        error: Exception,
+    ) -> Optional[dict[str, Any]]:
+        self.logger.error(
+            f"[EXECUTION OUTCOME] Tool '{tool.name}' failed with error: {error}",
+            exc_info=True,
+        )
+        return None
+
+    async def on_model_error_callback(
+        self,
+        *,
+        callback_context: "CallbackContext",
+        llm_request: "LlmRequest",
+        error: Exception,
+    ) -> Optional[LlmResponse]:
+        agent_name = getattr(callback_context, "agent_name", "unknown")
+        self.logger.error(
+            f"[EXECUTION OUTCOME] LLM query for agent '{agent_name}' failed with error: {error}",
+            exc_info=True,
+        )
+        return None
+
+
 # =====================================================================
 # 3. SPECIALIST AGENTS & STRATEGIC ROUTING
 # =====================================================================
@@ -472,7 +595,7 @@ root_agent = Agent(
 app = App(
     root_agent=root_agent,
     name="app",
-    plugins=[AcademicPolicyPlugin()],
+    plugins=[AcademicPolicyPlugin(), ActionOutcomeLoggingPlugin()],
     resumability_config=ResumabilityConfig(is_resumable=True),
     events_compaction_config=EventsCompactionConfig(
         compaction_interval=20,  # summarize every 20 events
