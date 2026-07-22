@@ -1,0 +1,514 @@
+{
+    "courses": [
+        {
+            "name": "Intro to Graphic Design",
+            "start_times": [
+                "10:00, 15:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Miss Smith",
+            "max_students": 15,
+            "enrolled_students": 11
+        },
+        {
+            "name": "Introduction to Computer Science",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. B.F. Skinner",
+            "max_students": 100,
+            "enrolled_students": 31
+        },
+        {
+            "name": "Data Structures and Algorithms",
+            "start_times": [
+                "11:00, 16:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. B.F. Skinner",
+            "max_students": 30,
+            "enrolled_students": 21
+        },
+        {
+            "name": "Software Engineering",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Gregor Mendel",
+            "max_students": 200,
+            "enrolled_students": 8
+        },
+        {
+            "name": "Machine Learning",
+            "start_times": [
+                "08:00, 12:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Grace Hopper",
+            "max_students": 60,
+            "enrolled_students": 32
+        },
+        {
+            "name": "Artificial Intelligence",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Erwin Schrödinger",
+            "max_students": 60,
+            "enrolled_students": 45
+        },
+        {
+            "name": "Database Systems",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Carl Sagan",
+            "max_students": 300,
+            "enrolled_students": 142
+        },
+        {
+            "name": "Computer Networks",
+            "start_times": [
+                "08:00, 12:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. William James",
+            "max_students": 200,
+            "enrolled_students": 87
+        },
+        {
+            "name": "Calculus I",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Grace Hopper",
+            "max_students": 150,
+            "enrolled_students": 26
+        },
+        {
+            "name": "Calculus II",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Marie Curie",
+            "max_students": 150,
+            "enrolled_students": 88
+        },
+        {
+            "name": "Linear Algebra",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Prof. Claude Shannon",
+            "max_students": 20,
+            "enrolled_students": 14
+        },
+        {
+            "name": "Discrete Mathematics",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Linus Torvalds",
+            "max_students": 200,
+            "enrolled_students": 21
+        },
+        {
+            "name": "Probability & Statistics",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Donald Knuth",
+            "max_students": 150,
+            "enrolled_students": 147
+        },
+        {
+            "name": "General Physics I",
+            "start_times": [
+                "11:00, 16:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Dr. Isaac Newton",
+            "max_students": 20,
+            "enrolled_students": 7
+        },
+        {
+            "name": "Quantum Mechanics",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Barbara Liskov",
+            "max_students": 60,
+            "enrolled_students": 55
+        },
+        {
+            "name": "Astrophysics",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Jane Goodall",
+            "max_students": 300,
+            "enrolled_students": 186
+        },
+        {
+            "name": "General Chemistry",
+            "start_times": [
+                "10:00, 15:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Prof. Rosalind Franklin",
+            "max_students": 60,
+            "enrolled_students": 42
+        },
+        {
+            "name": "Organic Chemistry",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Prof. Linus Torvalds",
+            "max_students": 30,
+            "enrolled_students": 19
+        },
+        {
+            "name": "Biochemistry",
+            "start_times": [
+                "10:00, 15:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Prof. B.F. Skinner",
+            "max_students": 60,
+            "enrolled_students": 10
+        },
+        {
+            "name": "General Biology",
+            "start_times": [
+                "11:30, 15:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Jane Goodall",
+            "max_students": 60,
+            "enrolled_students": 43
+        },
+        {
+            "name": "Genetics",
+            "start_times": [
+                "09:30, 13:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Carl Sagan",
+            "max_students": 20,
+            "enrolled_students": 10
+        },
+        {
+            "name": "Microbiology",
+            "start_times": [
+                "10:30, 14:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Isaac Newton",
+            "max_students": 60,
+            "enrolled_students": 58
+        },
+        {
+            "name": "Ecology",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Dr. Charles Darwin",
+            "max_students": 60,
+            "enrolled_students": 41
+        },
+        {
+            "name": "Microeconomics",
+            "start_times": [
+                "11:30, 15:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Tim Berners-Lee",
+            "max_students": 300,
+            "enrolled_students": 73
+        },
+        {
+            "name": "Macroeconomics",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Carl Sagan",
+            "max_students": 100,
+            "enrolled_students": 95
+        },
+        {
+            "name": "Game Theory",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Tim Berners-Lee",
+            "max_students": 200,
+            "enrolled_students": 92
+        },
+        {
+            "name": "Behavioral Economics",
+            "start_times": [
+                "11:00, 16:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Max Planck",
+            "max_students": 300,
+            "enrolled_students": 46
+        },
+        {
+            "name": "Introduction to Psychology",
+            "start_times": [
+                "08:00, 12:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Albert Einstein",
+            "max_students": 45,
+            "enrolled_students": 43
+        },
+        {
+            "name": "Cognitive Psychology",
+            "start_times": [
+                "10:30, 14:30"
+            ],
+            "duration_hrs": 3,
+            "professor": "Dr. Isaac Newton",
+            "max_students": 200,
+            "enrolled_students": 97
+        },
+        {
+            "name": "Social Psychology",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Max Planck",
+            "max_students": 100,
+            "enrolled_students": 70
+        },
+        {
+            "name": "Introduction to Philosophy",
+            "start_times": [
+                "08:00, 12:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Prof. B.F. Skinner",
+            "max_students": 30,
+            "enrolled_students": 21
+        },
+        {
+            "name": "Ethics",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. John von Neumann",
+            "max_students": 150,
+            "enrolled_students": 28
+        },
+        {
+            "name": "Formal Logic",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Richard Feynman",
+            "max_students": 300,
+            "enrolled_students": 1
+        },
+        {
+            "name": "Creative Writing",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Dr. John von Neumann",
+            "max_students": 45,
+            "enrolled_students": 33
+        },
+        {
+            "name": "Shakespearean Literature",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 3,
+            "professor": "Prof. Stephen Hawking",
+            "max_students": 60,
+            "enrolled_students": 9
+        },
+        {
+            "name": "Technical Communication",
+            "start_times": [
+                "09:30, 13:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Erwin Schrödinger",
+            "max_students": 20,
+            "enrolled_students": 19
+        },
+        {
+            "name": "World History",
+            "start_times": [
+                "09:30, 13:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Alan Turing",
+            "max_students": 30,
+            "enrolled_students": 29
+        },
+        {
+            "name": "Modern American History",
+            "start_times": [
+                "09:30, 13:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Carl Sagan",
+            "max_students": 20,
+            "enrolled_students": 7
+        },
+        {
+            "name": "History of Art",
+            "start_times": [
+                "14:00, 18:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Isaac Newton",
+            "max_students": 300,
+            "enrolled_students": 36
+        },
+        {
+            "name": "Digital Photography",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Albert Einstein",
+            "max_students": 300,
+            "enrolled_students": 281
+        },
+        {
+            "name": "Introduction to Sociology",
+            "start_times": [
+                "10:00, 15:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Max Planck",
+            "max_students": 200,
+            "enrolled_students": 54
+        },
+        {
+            "name": "Human Anatomy",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 3,
+            "professor": "Dr. William James",
+            "max_students": 60,
+            "enrolled_students": 45
+        },
+        {
+            "name": "Organic Chemistry II",
+            "start_times": [
+                "13:00, 17:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Prof. Carl Jung",
+            "max_students": 150,
+            "enrolled_students": 112
+        },
+        {
+            "name": "Linear Programming",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Marie Curie",
+            "max_students": 60,
+            "enrolled_students": 14
+        },
+        {
+            "name": "Number Theory",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 2,
+            "professor": "Dr. Alan Turing",
+            "max_students": 60,
+            "enrolled_students": 37
+        },
+        {
+            "name": "Operating Systems",
+            "start_times": [
+                "11:00, 16:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Isaac Newton",
+            "max_students": 20,
+            "enrolled_students": 7
+        },
+        {
+            "name": "Compiler Design",
+            "start_times": [
+                "09:00, 14:00"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. Barbara Liskov",
+            "max_students": 150,
+            "enrolled_students": 18
+        },
+        {
+            "name": "Cybersecurity Basics",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Dr. Jane Goodall",
+            "max_students": 300,
+            "enrolled_students": 109
+        },
+        {
+            "name": "Cloud Computing",
+            "start_times": [
+                "08:30, 12:30"
+            ],
+            "duration_hrs": 1,
+            "professor": "Prof. B.F. Skinner",
+            "max_students": 300,
+            "enrolled_students": 124
+        },
+        {
+            "name": "Mobile App Development",
+            "start_times": [
+                "11:30, 15:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Prof. Grace Hopper",
+            "max_students": 30,
+            "enrolled_students": 3
+        },
+        {
+            "name": "Web Development",
+            "start_times": [
+                "10:30, 14:30"
+            ],
+            "duration_hrs": 2,
+            "professor": "Prof. Katherine Johnson",
+            "max_students": 200,
+            "enrolled_students": 119
+        }
+    ]
+}
