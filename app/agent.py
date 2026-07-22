@@ -13,20 +13,82 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import asyncio
+import contextvars
 import datetime
 import json
 import os
 
 from google.adk.agents import Agent
+from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.context_cache_config import ContextCacheConfig
 from google.adk.apps import App
 from google.adk.apps.app import EventsCompactionConfig
 from google.adk.apps.llm_event_summarizer import LlmEventSummarizer
+from google.adk.events import Event
 from google.adk.models import Gemini
 from google.genai import types
 from zoneinfo import ZoneInfo
 from pydantic import BaseModel, Field
 from typing import Optional, List
+
+# Context variables to track active session identifiers
+active_session_id = contextvars.ContextVar("active_session_id", default=None)
+active_user_id = contextvars.ContextVar("active_user_id", default=None)
+active_app_name = contextvars.ContextVar("active_app_name", default=None)
+
+
+class AsyncLlmEventSummarizer(LlmEventSummarizer):
+    """An LLM-based event summarizer that executes compaction in an asynchronous background task.
+
+    This avoids blocking the main conversation thread on the latent LLM summarization call.
+    """
+
+    async def maybe_summarize_events(
+        self, *, events: List[Event]
+    ) -> Optional[Event]:
+        """Summarizes the events in a background task and appends the result to the session."""
+        session_id = active_session_id.get()
+        user_id = active_user_id.get()
+        app_name = active_app_name.get()
+
+        # If session context is missing, run synchronously as a fallback
+        if not (session_id and user_id and app_name):
+            return await super().maybe_summarize_events(events=events)
+
+        async def run_compaction():
+            try:
+                # 1. Run the LLM summarization (latent call)
+                compacted_event = await super(AsyncLlmEventSummarizer, self).maybe_summarize_events(events=events)
+                if compacted_event:
+                    # 2. Append the compacted event asynchronously back to the session history
+                    from app.app_utils.services import get_session_service
+                    session_service = get_session_service()
+                    session = await session_service.get_session(
+                        app_name=app_name,
+                        user_id=user_id,
+                        session_id=session_id
+                    )
+                    if session:
+                        await session_service.append_event(session=session, event=compacted_event)
+            except Exception as e:
+                import logging
+                logging.getLogger("AsyncLlmEventSummarizer").error(
+                    f"Failed to run background event compaction: {e}", exc_info=True
+                )
+
+        # Dispatch compaction to background event loop task
+        asyncio.create_task(run_compaction())
+
+        # Return None immediately to unblock the current user transaction
+        return None
+
+
+async def populate_session_context(callback_context: CallbackContext) -> None:
+    """Populates context variables with session identifiers before agent runs."""
+    active_session_id.set(callback_context.session.id)
+    active_user_id.set(callback_context.session.user_id)
+    active_app_name.set(callback_context.session.app_name)
 
 
 class Course(BaseModel):
@@ -179,6 +241,7 @@ root_agent = Agent(
     description="A helpful college student assistant that helps with scheduling and enrolling in classes.",
     instruction=root_agent_instruction,
     tools=[get_available_classes, enroll_in_class],
+    before_agent_callback=populate_session_context,
 )
 
 
@@ -188,7 +251,7 @@ app = App(
     events_compaction_config=EventsCompactionConfig(
         compaction_interval=20,  # summarize every 20 events
         overlap_size=3,  # include last 3 events in next window for continuity
-        summarizer=LlmEventSummarizer(llm=Gemini(model="gemini-flash-latest")),
+        summarizer=AsyncLlmEventSummarizer(llm=Gemini(model="gemini-flash-latest")),
     ),
     context_cache_config=ContextCacheConfig(
         min_tokens=2048,  # only cache if context exceeds this
